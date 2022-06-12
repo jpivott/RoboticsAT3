@@ -21,9 +21,9 @@ def play():
         location = map.player_location(player.x, player.y)
         print(location.intro_text())
         location.modify_player(player)
-        if player.alive() and not player.victory
+        if player.alive() and not player.victory:
             player_action(location, player)
-        elif not player.alive()
+        elif not player.alive():
             print("You have died, your brother will rot in the dungeons of King Bowie forever!")
 
 def player_action(location, player):
@@ -45,7 +45,7 @@ def get_possible_actions(location, player):
     if isinstance(location, map.MerchantTile):
         action_adder(actions, 'm', player.trade, "Trade with Merchant")
     if isinstance(location, map.EnemyGenerator) and location.enemy.alive():
-        action_adder(actions, 'a' player.attack, "Attack the enemy")
+        action_adder(actions, 'a', player.attack, "Attack the enemy")
     else:
         if map.player_location(location.x, location.y - 1):
             action_adder(actions, 'u', player.move_up, "Go up")
@@ -63,6 +63,6 @@ def get_possible_actions(location, player):
 def action_adder(action_dict, hotkey, action, name):
     action_dict[hotkey.lower()] = action
     action_dict[hotkey.upper()] = action
-    print("{}".format(name))
+    print("{}: {}".format(hotkey, name))
 
 play()

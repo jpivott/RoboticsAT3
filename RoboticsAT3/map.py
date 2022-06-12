@@ -8,6 +8,9 @@ class Tile:
         self.x = x
         self.y = y
 
+    def intro_text(self):
+        raise NotImplementedError("Create a subclass instead!")
+
     def modify_player(self, player):
         pass
 
@@ -29,34 +32,34 @@ class EnemyGenerator(Tile):
             self.battle_text = "A large, ferocious rat has scurried into your path" \
                                "Its large teeth are huge and razor sharp!"
             self.slain_text = "The rat has be slain, good job."
-        elif r < 0.35
+        elif r < 0.35:
             self.enemy = enemy.Goblin()
             self.battle_text = "One of the Kings goblins blocks your way" \
                                "Its holds an old spear but looks well trained!"
             self.slain_text = "The goblin is dead! One less enemy to worry about."
-        elif r < 0.55
+        elif r < 0.55:
             self.enemy = enemy.Rogue()
             self.battle_text = "A Rogue!" \
                                "One of the Kings assassins, be careful!"
             self.slain_text = "A well fought battle, the Rogue is no more!"
-        elif r < 0.70
+        elif r < 0.70:
             self.enemy = enemy.DarkElf()
             self.battle_text = "On guard! A Dark Elf challenges you." \
                                "King Bowie enslaved these creatures to do his evil bidding"
             self.slain_text = "You have realised the Dark Elf from its survitude" \
                               "The elf thanks you with its dying breath."
-        elif r < 0.80
+        elif r < 0.80:
             self.enemy = enemy.Wizard()
             self.battle_text = "An all powerful Wizard threatens your life" \
                                "One of the Kings strongest minions"
             self.slain_text = "You have won a great victory, the wizard is slain."
-        elif r < 0.90
+        elif r < 0.90:
             self.enemy = enemy.Demon()
             self.battle_text = "You face a Demon of the underworld" \
                                "Prepare yourself, you may not survive this encounter"
             self.slain_text = "A great evil has been purged this day, well done adventurer" \
                               "Your name will be remembered always...if anyone saw what happened that is..."
-        else
+        else:
             self.enemy = enemy.GoblinKing()
             self.battle_text = "The King himself!" \
                                "He is slow from years of overeating but has great stamina"
@@ -86,7 +89,7 @@ class GoldTile(Tile):
     def __init__(self, x, y):
         self.gold = random.randint(1, 50)
         self.gold_claimed = False
-        super().__init__(x,y )
+        super().__init__(x, y)
 
     def player_gold(self, player):
         if not self.gold_claimed:
@@ -127,7 +130,7 @@ class MerchantTile(Tile):
 
     def shop(self, buyer, seller):
         for i, collectable in enumerate(seller.bag, 1):
-            print("{}. {} - {} Gold".format(i, collectable.name, collectable.goldValue)
+            print("{}. {} - {} Gold".format(i, collectable.name, collectable.goldValue))
         while True:
             user_input = input("Select an item or press Q to exit the shop: ")
             if user_input in ['Q', "q"]:
@@ -169,15 +172,15 @@ map_dsl = """
 |MT|WT|ET|GT|ET|
 |ET|GT|  |ET|MT|
 |GT|MT|ET|ET|  |
-|  |ET|ET|ET|  |
+|  |ET|ET|ET|ST|
 """
 
 def is_dsl_valid(dsl):
-    if dsl.count("|ST|") != 1;
+    if dsl.count("|ST|") != 1:
         return False
-    if dsl.count("|WT|") != 1:
+    if dsl.count("|WT|") == 0:
         return False
-    lines = dsl.splitline()
+    lines = dsl.splitlines()
     lines = [l for l in lines if l]
     pipe_counts = [line.count("|") for line in lines]
     for count in pipe_counts:
@@ -191,7 +194,7 @@ game_map = []
 starting_tile = None
 
 def parse_map_dsl():
-    if not is_dsl_valid(map_dsl)
+    if not is_dsl_valid(map_dsl):
         raise SyntaxError("DSL is not valid")
 
     dsl_lines = map_dsl.splitlines()
@@ -202,7 +205,7 @@ def parse_map_dsl():
         dsl_cells = dsl_row.split("|")
         dsl_cells = [c for c in dsl_cells if c]
         for x, dsl_cell in enumerate(dsl_cells):
-            tile_type = tile_type_dict[dsl_cell]
+            tile_type = tile_dictionary[dsl_cell]
             if tile_type == StartingTile:
                 global starting_tile
                 starting_tile = x, y
@@ -214,6 +217,6 @@ def player_location(x, y):
     if x < 0 or y < 0:
         return None
     try:
-        return game_map[x][y]
+        return game_map[y][x]
     except IndexError:
         return None
