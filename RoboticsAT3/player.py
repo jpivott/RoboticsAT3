@@ -32,3 +32,8 @@ class Player:
             except (ValueError, IndexError):
                 print("Your choice either cannot be eaten or is not on the list, try again.")
 
+    def show_bag_contents(self):
+        print("Bag Contents:")
+        for collectable in self.bag:
+            print('* ' + str(collectable))
+            print("Gold: {}".format(self.gold))
