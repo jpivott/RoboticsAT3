@@ -13,7 +13,7 @@ class Tile:
 
 
 class StartingTile(Tile):
-    def start_dialogue(self):
+    def intro_text(self):
         return """ 
         You must find your brother from the evil Goblin King Bowie! 
         You have snuck in to the dungeon of Bowie's castle.
@@ -62,3 +62,96 @@ class EnemyGenerator(Tile):
                                "He is slow from years of overeating but has great stamina"
             self.slain_text = "While you have defeated King Bowie you must be careful" \
                               "It is rumoured that the King is immortal and will always return."
+
+        super().__init__(x, y)
+
+    def enemy_text(self)
+
+
+class WinTile(Tile):
+    def player_win(self, player):
+        player.victory = True
+
+    def intro_text(self):
+        return """
+        You have rescued your brother from the dungeons
+        and defeated the evil Goblin King Bowie (may he rest in peace)
+
+        You have won!
+        """
+
+class GoldTile(Tile):
+    def __init__(self, x, y):
+        self.gold = random.randint(1, 50)
+        self.gold_claimed = False
+        super().__init__(x,y )
+
+    def player_gold(self, player):
+        if not self.gold_claimed:
+            self.gold_claimed = True
+            player.gold = player.gold + self.gold
+            print("+{} gold added to your bag.".format(self.gold))
+
+    def intro_text(self):
+        if self.gold_claimed #possible error here with colon
+            return """
+            You already looted this room
+            """
+        else #possible error here with colon
+            return """
+            You have found some gold
+            """
+
+
+class MerchantTile(Tile):
+    def __init__(self, x, y):
+        self.merchant = characters.Merchant()
+        super().__init__(x, y)
+
+    def check_trade(self, player):
+        while True #possible error here with colon
+            print("What would you like to do? (B)uy, (S)ell, or (Q)uit?")
+            user_input = input()
+            if user_input in ['Q', 'q']
+                return
+            elif user_input in ['B', 'b']
+                print("Please inspect my wares: ")
+                self.shop(buyer=player, seller=self.trader)
+            elif user_input in ['S', 's']
+                print("A list of what can be sold: ")
+                self.shop(buyer-self.trader, seller=player)
+            else
+                print("Please try a different choice.")
+
+    def shop(self, buyer, seller):
+        for i, collectable in enumerate(seller.bag, 1):
+            print("{}. {} - {} Gold".format(i, collectable.name, collectable.goldValue)
+        while True:
+            user_input = input("Select an item or press Q to exit the shop: ")
+            if user_input in ['Q', "q"]
+                return #possible error here with colon
+            else
+                try:
+                    choice = int(user_input)
+                    item_to_swap = seller.bag[choice - 1]
+                    self.swap(seller, buyer, item_to_swap)
+                except ValueError
+                    print("The choice you made is invalid, try again.")
+
+    def swap(self, seller, buyer, collectable):
+        if collectable.goldValue > buyer.gold
+            print("Hmm, that item costs too much gold")
+            return
+        seller.bag.remove(collectable)
+        buyer.bag.append(collectable)
+        seller.gold = seller.gold + collectable.goldValue
+        buyer.gold = buyer.gold - collectable.goldValue
+        print("Thanks for doing business!")
+
+    def intro_text(self):
+        return """
+        A quick-witted looking Merchant eyes you greedily.
+        You may buy or sell with this person but you better
+        be on your toes!
+        """
+

@@ -8,6 +8,7 @@ class Player:
                     collectables.Potion()]
         self.health = 80
         self.gold = 10
+        self.victory = False
 
     def alive(self):
         return self.health > 0

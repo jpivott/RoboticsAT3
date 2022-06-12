@@ -13,7 +13,7 @@ class Merchant(Characters):
     def __init__(self):
         self.description = "Merchant"
         self.gold = 200
-        self.items = [collectables.Katana(),
+        self.bag = [collectables.Katana(),
                       collectables.Steak(),
                       collectables.Sword(),
                       collectables.Potion(),
