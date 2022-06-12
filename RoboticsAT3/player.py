@@ -6,7 +6,8 @@ class Player:
     def __init__(self):
         self.bag = [collectables.Cheese(),
                     collectables.Slingshot(),
-                    collectables.Potion()]
+                    collectables.Potion(),
+                    collectables.Sword()]
         self.health = 80
         self.gold = 10
         self.victory = False
@@ -17,12 +18,12 @@ class Player:
         return self.health > 0
 
     def heal(self):
-        usableItems = [collectable for collectable in self.bag if isintance(item, collectables.UsableItems)]
+        usableItems = [collectable for collectable in self.bag if isinstance(collectable, collectables.UsableItems)]
         if not usableItems:
             (print("Oh no, you're screwed mate. Maybe ask your Kiwi mates for a sheep because you currently have no healing options!"))
 
+        print("Select which healing item you would like to use in order to extend your miserable existence")
         for c, consumable in enumerate(usableItems, 1):
-            print("Select which healing item you would like to use in order to extend your miserable existence")
             print("{}. {}".format(c, consumable))
 
         edible = False
@@ -30,7 +31,7 @@ class Player:
             choice = input("")
             try:
                 eating = usableItems[int(choice) - 1]
-                self.health = min(80, self.health + eating.healing_value)
+                self.health = min(80, self.health + eating.healing)
                 print("Your current health is now: {}".format(self.health))
                 edible = True
             except (ValueError, IndexError):
@@ -39,8 +40,8 @@ class Player:
     def show_bag_contents(self):
         print("Bag Contents:")
         for collectable in self.bag:
-            print('* ' + str(collectable))
-            print("Gold: {}".format(self.gold))
+            print('\033[0;32m' + "          # " + str(collectable))
+        print("          Gold: {}".format(self.gold) + '\033[0;37m')
 
     def use_best_weapon(self):
         damage = 0
@@ -73,9 +74,9 @@ class Player:
 
     def attack(self):
         weapon = self.use_best_weapon()
-        location = map.player_location
+        location = map.player_location(self.x, self.y)
         enemy = location.enemy
-        print("You use your {} to attack {}.".format(weapon.description, enemy.decription))
+        print("You use your {} to attack the {}.".format(weapon.description, enemy.description))
         enemy.health -= weapon.damage
         if not enemy.alive():
             print("You have killed the {}.".format(enemy.description))

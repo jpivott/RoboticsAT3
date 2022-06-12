@@ -18,9 +18,9 @@ class Tile:
 class StartingTile(Tile):
     def intro_text(self):
         return """ 
-        You must find your brother from the evil Goblin King Bowie! 
+        You must save your brother from the evil Goblin King Bowie! 
         You have snuck in to the dungeon of Bowie's castle.
-        There are four doors you could take. Choose carefully adventurer.
+        There are many paths to take. Choose carefully adventurer.
         """
 
 
@@ -29,48 +29,81 @@ class EnemyGenerator(Tile):
         r = random.random()
         if r < 0.20:
             self.enemy = enemy.Rat()
-            self.battle_text = "A large, ferocious rat has scurried into your path" \
-                               "Its large teeth are huge and razor sharp!"
-            self.slain_text = "The rat has be slain, good job."
+            self.battle_text = '\033[1;35m' + """
+                               A large, ferocious rat has scurried into your path
+                               Its large teeth are huge and razor sharp!
+                               """ + '\033[0;37m'
+            self.slain_text = """
+                              The rat has be slain, good job.
+                              """
         elif r < 0.35:
             self.enemy = enemy.Goblin()
-            self.battle_text = "One of the Kings goblins blocks your way" \
-                               "Its holds an old spear but looks well trained!"
-            self.slain_text = "The goblin is dead! One less enemy to worry about."
+            self.battle_text = """
+                               One of the Kings goblins blocks your way.
+                               It holds an old spear but looks well trained!
+                               """
+            self.slain_text = """
+                              The goblin is dead! One less enemy to worry about.
+                              """
         elif r < 0.55:
             self.enemy = enemy.Rogue()
-            self.battle_text = "A Rogue!" \
-                               "One of the Kings assassins, be careful!"
-            self.slain_text = "A well fought battle, the Rogue is no more!"
+            self.battle_text = """
+                               A Rogue!
+                               One of the Kings assassins, be careful!
+                               """
+            self.slain_text = """
+                              A well fought battle, the Rogue is no more!
+                              """
         elif r < 0.70:
             self.enemy = enemy.DarkElf()
-            self.battle_text = "On guard! A Dark Elf challenges you." \
-                               "King Bowie enslaved these creatures to do his evil bidding"
-            self.slain_text = "You have realised the Dark Elf from its survitude" \
-                              "The elf thanks you with its dying breath."
+            self.battle_text = """
+                               On guard! A Dark Elf challenges you.
+                               King Bowie enslaved these creatures to do his evil bidding
+                               """
+            self.slain_text = """
+                               You have realised the Dark Elf from its survitude,
+                               The elf thanks you with its dying breath.
+                               """
         elif r < 0.80:
             self.enemy = enemy.Wizard()
-            self.battle_text = "An all powerful Wizard threatens your life" \
-                               "One of the Kings strongest minions"
-            self.slain_text = "You have won a great victory, the wizard is slain."
+            self.battle_text = """
+                               An all powerful Wizard threatens your life,
+                               One of the Kings strongest minions!
+                               """
+            self.slain_text = """
+                              You have won a great victory, the wizard is slain.
+                              """
         elif r < 0.90:
             self.enemy = enemy.Demon()
-            self.battle_text = "You face a Demon of the underworld" \
-                               "Prepare yourself, you may not survive this encounter"
-            self.slain_text = "A great evil has been purged this day, well done adventurer" \
-                              "Your name will be remembered always...if anyone saw what happened that is..."
+            self.battle_text = """
+                               You face a Demon of the underworld,
+                               Prepare yourself, you may not survive this encounter
+                               """
+            self.slain_text = """
+                              A great evil has been purged this day, well done adventurer
+                              Your name will be remembered always...if anyone saw what happened that is...
+                              """
         else:
             self.enemy = enemy.GoblinKing()
-            self.battle_text = "The King himself!" \
-                               "He is slow from years of overeating but has great stamina"
-            self.slain_text = "While you have defeated King Bowie you must be careful" \
-                              "It is rumoured that the King is immortal and will always return."
+            self.battle_text = '\033[1;35m' + """
+                               The King himself!
+                               He is slow from years of overeating but has great stamina
+                               """ + '\033[0;37m'
+            self.slain_text = """
+                              While you have defeated King Bowie you must be careful.
+                              It is rumoured that the King is immortal and will always return.
+                              """
 
         super().__init__(x, y)
 
     def intro_text(self):
         text = self.battle_text if self.enemy.alive() else self.slain_text
         return text
+
+    def modify_player(self, player):
+        if self.enemy.alive():
+            player.health = player.health - self.enemy.damage
+            print("{} hurts your for {} points of health damage. Your remaining health: {}".format(self.enemy.description, self.enemy.damage, player.health))
 
 
 class WinTile(Tile):
@@ -91,7 +124,7 @@ class GoldTile(Tile):
         self.gold_claimed = False
         super().__init__(x, y)
 
-    def player_gold(self, player):
+    def modify_player(self, player):
         if not self.gold_claimed:
             self.gold_claimed = True
             player.gold = player.gold + self.gold
@@ -168,11 +201,11 @@ tile_dictionary = {"WT": WinTile,
                    "  ": None}
 
 map_dsl = """
-|  |ET|  |ET|GT|
+|GT|ET|ET|ET|GT|
 |MT|WT|ET|GT|ET|
-|ET|GT|  |ET|MT|
-|GT|MT|ET|ET|  |
-|  |ET|ET|ET|ST|
+|ET|GT|GT|ET|MT|
+|GT|MT|ET|ST|ET|
+|GT|ET|ET|ET|GT|
 """
 
 def is_dsl_valid(dsl):

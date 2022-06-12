@@ -3,7 +3,7 @@ class DeathBringers:
         pass
 
     def __str__(self):
-        return self.description
+        return "{} ({} Damage)".format(self.description, self.damage)
 
 
 class Hands(DeathBringers):
