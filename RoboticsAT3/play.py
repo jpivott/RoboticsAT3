@@ -1,5 +1,7 @@
+from collections import OrderedDict
+from player import Player
+import map
 import os
-
 os.system("cls")
 
 def play():
@@ -12,5 +14,7 @@ def play():
          ########### #####   ##### ###########     #####    #####   ##### ##### #####  ``#####    #####    #####   #####    
         ``````````` `````   ````` ```````````     `````    `````   ````` ````` `````    `````    `````    `````   `````     """ + '\033[0;37m')
     print('\033[0;31m' + "                                      !SAVE YOUR BROTHER FROM THE EVIL GOBLIN KING!" + '\033[0;37m')
+
+    
 
 play()
