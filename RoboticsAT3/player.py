@@ -1,4 +1,5 @@
 import collectables
+import map
 
 
 class Player:
@@ -9,6 +10,8 @@ class Player:
         self.health = 80
         self.gold = 10
         self.victory = False
+        self.x = map.starting_tile[0]
+        self.y = map.starting_tile[1]
 
     def alive(self):
         return self.health > 0
@@ -51,3 +54,34 @@ class Player:
                 pass
 
         return weapon
+
+    def move(self, dx, dy):
+        self.x += dx
+        self.y += dy
+
+    def move_up(self):
+        self.move(dx= 0, dy = 1)
+
+    def move_down(self):
+        self.move(dx= 0, dy = -1)
+
+    def move_left(self):
+        self.move(dx = -1, dy = 0)
+
+    def move_right(self):
+        self.move(dx = 1, dy = 0)
+
+    def attack(self):
+        weapon = self.use_best_weapon()
+        location = map.player_location
+        enemy = location.enemy
+        print("You use your {} to attack {}.".format(weapon.description, enemy.decription))
+        enemy.health -= weapon.damage
+        if not enemy.alive():
+            print("You have killed the {}.".format(enemy.description))
+        else:
+            print("Health remaining for the {} is {} points".format(enemy.description, enemy.health))
+
+    def trade(self):
+        location = map.player_location(self.x, self.y)
+        location.check_trade(self)

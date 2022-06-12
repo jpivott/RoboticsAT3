@@ -210,7 +210,7 @@ def parse_map_dsl():
 
         game_map.append(row)
 
-def tile_at(x, y):
+def player_location(x, y):
     if x < 0 or y < 0:
         return None
     try:
