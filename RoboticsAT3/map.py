@@ -65,7 +65,9 @@ class EnemyGenerator(Tile):
 
         super().__init__(x, y)
 
-    def enemy_text(self)
+    def intro_text(self):
+        text = self.battle_text if self.enemy.alive() else self.slain_text
+        return text
 
 
 class WinTile(Tile):
@@ -93,11 +95,11 @@ class GoldTile(Tile):
             print("+{} gold added to your bag.".format(self.gold))
 
     def intro_text(self):
-        if self.gold_claimed #possible error here with colon
+        if self.gold_claimed:
             return """
             You already looted this room
             """
-        else #possible error here with colon
+        else:
             return """
             You have found some gold
             """
@@ -109,18 +111,18 @@ class MerchantTile(Tile):
         super().__init__(x, y)
 
     def check_trade(self, player):
-        while True #possible error here with colon
+        while True:
             print("What would you like to do? (B)uy, (S)ell, or (Q)uit?")
             user_input = input()
-            if user_input in ['Q', 'q']
+            if user_input in ['Q', 'q']:
                 return
-            elif user_input in ['B', 'b']
+            elif user_input in ['B', 'b']:
                 print("Please inspect my wares: ")
                 self.shop(buyer=player, seller=self.trader)
-            elif user_input in ['S', 's']
+            elif user_input in ['S', 's']:
                 print("A list of what can be sold: ")
                 self.shop(buyer-self.trader, seller=player)
-            else
+            else:
                 print("Please try a different choice.")
 
     def shop(self, buyer, seller):
@@ -128,18 +130,18 @@ class MerchantTile(Tile):
             print("{}. {} - {} Gold".format(i, collectable.name, collectable.goldValue)
         while True:
             user_input = input("Select an item or press Q to exit the shop: ")
-            if user_input in ['Q', "q"]
-                return #possible error here with colon
-            else
+            if user_input in ['Q', "q"]:
+                return
+            else:
                 try:
                     choice = int(user_input)
                     item_to_swap = seller.bag[choice - 1]
                     self.swap(seller, buyer, item_to_swap)
-                except ValueError
+                except ValueError:
                     print("The choice you made is invalid, try again.")
 
     def swap(self, seller, buyer, collectable):
-        if collectable.goldValue > buyer.gold
+        if collectable.goldValue > buyer.gold:
             print("Hmm, that item costs too much gold")
             return
         seller.bag.remove(collectable)
@@ -155,3 +157,63 @@ class MerchantTile(Tile):
         be on your toes!
         """
 
+tile_dictionary = {"WT": WinTile,
+                   "ST": StartingTile,
+                   "GT": GoldTile,
+                   "ET": EnemyGenerator,
+                   "MT": MerchantTile,
+                   "  ": None}
+
+map_dsl = """
+|  |ET|  |ET|GT|
+|MT|WT|ET|GT|ET|
+|ET|GT|  |ET|MT|
+|GT|MT|ET|ET|  |
+|  |ET|ET|ET|  |
+"""
+
+def is_dsl_valid(dsl):
+    if dsl.count("|ST|") != 1;
+        return False
+    if dsl.count("|WT|") != 1:
+        return False
+    lines = dsl.splitline()
+    lines = [l for l in lines if l]
+    pipe_counts = [line.count("|") for line in lines]
+    for count in pipe_counts:
+        if count != pipe_counts[0]:
+            return False
+
+    return True
+
+game_map = []
+
+starting_tile = None
+
+def parse_map_dsl():
+    if not is_dsl_valid(map_dsl)
+        raise SyntaxError("DSL is not valid")
+
+    dsl_lines = map_dsl.splitlines()
+    dsl_lines = [x for x in dsl_lines if x]
+
+    for y, dsl_row in enumerate(dsl_lines):
+        row = []
+        dsl_cells = dsl_row.split("|")
+        dsl_cells = [c for c in dsl_cells if c]
+        for x, dsl_cell in enumerate(dsl_cells):
+            tile_type = tile_type_dict[dsl_cell]
+            if tile_type == StartingTile:
+                global starting_tile
+                starting_tile = x, y
+            row.append(tile_type(x, y) if tile_type else None)
+
+        game_map.append(row)
+
+def tile_at(x, y):
+    if x < 0 or y < 0:
+        return None
+    try:
+        return game_map[x][y]
+    except IndexError:
+        return None
