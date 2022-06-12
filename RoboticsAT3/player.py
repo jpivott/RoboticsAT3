@@ -37,3 +37,16 @@ class Player:
         for collectable in self.bag:
             print('* ' + str(collectable))
             print("Gold: {}".format(self.gold))
+
+    def use_best_weapon(self):
+        damage = 0
+        weapon = None
+        for collectable in self.bag:
+            try:
+                if collectable.damage > damage:
+                    weapon = collectable
+                    damage = collectable.damage
+            except AttributeError:
+                pass
+
+        return weapon
